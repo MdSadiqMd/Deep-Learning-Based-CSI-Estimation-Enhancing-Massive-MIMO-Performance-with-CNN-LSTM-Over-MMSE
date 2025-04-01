@@ -5,9 +5,10 @@ NT = 32;  % Number of transmitter antennas (URA)
 NR = 4;   % Number of receiver antennas (ULA)
 K = 234;  % Number of usable subcarriers
 SNR_levels = [-20 -10 0 10 20 30];
-num_samples = 200;
+num_samples = 500;
 fs = 100e6; % Bandwidth 100 MHz
 fc = 28e9;  % Carrier frequency 28 GHz
+L = NT;     % Length of LTF sequence
 
 %% Generate Training Data
 data = zeros(num_samples, K, NT, NR);
@@ -45,6 +46,7 @@ options = trainingOptions('adam', ...
 % Train Network
 %net = trainNetwork(reshape(data, num_samples, []), reshape(labels, num_samples, []), layers, options);
 load net.mat
+
 %% Generate Test Data
 num_tests = 500;
 test_data = zeros(num_tests, K, NT, NR);
@@ -63,8 +65,7 @@ end
 %% Perform Channel Estimation
 [H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS] = estimate_channel(net, test_data, K, NT, NR);
 
-%% Plot Performance Metrics
-plot_nmse(SNR_levels, H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS, test_labels);
-plot_gain(SNR_levels, H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS, test_labels);
-plot_ber(SNR_levels);
-
+%% Plot Performance Metrics with Scaling Factors
+plot_nmse(SNR_levels, H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS);
+plot_gain(SNR_levels, H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS);
+plot_ber(SNR_levels, H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS);
