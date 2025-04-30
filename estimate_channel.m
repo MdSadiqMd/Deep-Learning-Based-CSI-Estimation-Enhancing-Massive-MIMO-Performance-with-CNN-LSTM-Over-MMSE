@@ -2,7 +2,7 @@
 function [H_pred_CNN_LSTM, H_pred_MMSE, H_pred_LS] = estimate_channel(net, test_data, K, NT, NR)
     num_tests = size(test_data, 1);
     
-    % CNN+LSTM Prediction
+    % CNN+LSTM Prediction (proposed method)
     preds = predict(net, reshape(test_data, num_tests, []));
     H_pred_CNN_LSTM = reshape(preds, num_tests, K, NT, NR);
     
